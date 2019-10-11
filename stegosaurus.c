@@ -4,6 +4,8 @@
 
 #include "stegosaurus_synth.h"
 
+#define MIDI_NOTE_OFF 0x80
+#define MIDI_NOTE_ON 0x90
 #define DB_CO(g) ((g) > -90.0f ? powf(10.0f, (g) * 0.05f) : 0.0f)
 
 
@@ -73,18 +75,18 @@ static void run(LV2_Handle instance, uint32_t n_samples) {
 
     LV2_ATOM_SEQUENCE_FOREACH(self->midi_in, ev) {
         // printf("Some sort of atom event detected.........");
-
         if (ev->body.type == uris->midi_Event) {
             uint8_t* const data = (uint8_t* const)(ev + 1);
+            uint8_t status = data[0] & 0xF0;
 
             // printf("Event detected - %d - %d - %d \n", data[0], data[1], data[2] );
 
-            if (data[0] == 0x99 && data[2] > 0) {
-                stegosaurus_synth_note_on( data[1], data[2] );
+            if (status == MIDI_NOTE_ON && data[2] > 0) {
+                stegosaurus_synth_note_on(data[1], data[2]);
             }
 
-            if (data[0] == 0x89 || (data[0] == 0x99 && data[2] == 0)) {
-                stegosaurus_synth_note_off( data[1] );
+            if (status == MIDI_NOTE_OFF || (status == MIDI_NOTE_ON && data[2] == 0)) {
+                stegosaurus_synth_note_off(data[1]);
             }
         }
     }
