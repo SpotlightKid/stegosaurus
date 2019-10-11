@@ -24,7 +24,7 @@ void stegosaurus_synth_init(int sample_rate)
 		{
 			voices[v] = (voice*)malloc(sizeof(voice));
 			voices[v]->active = false;
-			voices[v]->osc[y].wave1_number = 0;	
+			voices[v]->osc[y].wave1_number = 0;
 			voices[v]->osc[y].wave2_number = 0;
 			voices[v]->osc[y].wave_mix = 0;
 			voices[v]->osc[y].start_phase = true;
@@ -33,7 +33,7 @@ void stegosaurus_synth_init(int sample_rate)
 			voices[v]->osc[y].increment = 1;
 			voices[v]->osc[y].bandlimit_offset = 0;
 		}
-	
+
 
 
 
@@ -44,7 +44,7 @@ void stegosaurus_synth_init(int sample_rate)
 	  	voices[v]->bf0_left=0; voices[v]->bf1_left=0; voices[v]->bf2_left=0; voices[v]->bf3_left=0; voices[v]->bf4_left=0;  //filter buffers (beware denormals!)
 	  	voices[v]->t1_left=0; voices[v]->t2_left=0;              //temporary buffers
 
-		voices[v]->selectivity_left=90, voices[v]->gain1_left=0, voices[v]->gain2_left=0.25, voices[v]->ratio_left=7, voices[v]->cap_left=0; 
+		voices[v]->selectivity_left=90, voices[v]->gain1_left=0, voices[v]->gain2_left=0.25, voices[v]->ratio_left=7, voices[v]->cap_left=0;
 
 		// Init filter right
 
@@ -54,7 +54,7 @@ void stegosaurus_synth_init(int sample_rate)
 	  	voices[v]->bf0_right=0; voices[v]->bf1_right=0; voices[v]->bf2_right=0; voices[v]->bf3_right=0; voices[v]->bf4_right=0;  //filter buffers (beware denormals!)
 	  	voices[v]->t1_right=0; voices[v]->t2_right=0;              //temporary buffers
 
-		voices[v]->selectivity_right=90, voices[v]->gain1_right=0, voices[v]->gain2_right=0.25, voices[v]->ratio_right=7, voices[v]->cap_right=0; 
+		voices[v]->selectivity_right=90, voices[v]->gain1_right=0, voices[v]->gain2_right=0.25, voices[v]->ratio_right=7, voices[v]->cap_right=0;
 
 
 		voices[v]->env_osc1_amp_state = ENV_STATE_DORMANT;
@@ -73,7 +73,7 @@ void stegosaurus_synth_cleanup()
 {
 	for (int x=0; x<4; x++)
 	{
-		free(voices[x]);		
+		free(voices[x]);
 	}
 
 	noise_cleanup();
@@ -82,7 +82,7 @@ void stegosaurus_synth_cleanup()
 void stegosaurus_synth_play(float* const out_left, float* const out_right, uint32_t n_frames)
 {
 
-	float master_volume = stegosaurus_self->params[stegosaurus_VOLUME][0]; 
+	float master_volume = stegosaurus_self->params[stegosaurus_VOLUME][0];
 
 	//-------------------------
 
@@ -93,9 +93,9 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 	osc1_active[3] = stegosaurus_self->params[stegosaurus_OPHAT_OSC1_ACTIVE][0];
 
 	float osc1_amp_attack[4];
-	osc1_amp_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC1_AMP_ATTACK][0],10); 
-	osc1_amp_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC1_AMP_ATTACK][0],10); 
-	osc1_amp_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC1_AMP_ATTACK][0],10); 
+	osc1_amp_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC1_AMP_ATTACK][0],10);
+	osc1_amp_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC1_AMP_ATTACK][0],10);
+	osc1_amp_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC1_AMP_ATTACK][0],10);
 	osc1_amp_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC1_AMP_ATTACK][0],10);
 
 	float osc1_amp_decay[4];
@@ -118,10 +118,10 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 
 
 	float osc1_pitch_attack[4];
-	osc1_pitch_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC1_PITCH_ATTACK][0],10); 
-	osc1_pitch_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC1_PITCH_ATTACK][0],10); 
-	osc1_pitch_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC1_PITCH_ATTACK][0],10); 
-	osc1_pitch_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC1_PITCH_ATTACK][0],10); 
+	osc1_pitch_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC1_PITCH_ATTACK][0],10);
+	osc1_pitch_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC1_PITCH_ATTACK][0],10);
+	osc1_pitch_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC1_PITCH_ATTACK][0],10);
+	osc1_pitch_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC1_PITCH_ATTACK][0],10);
 
 	float osc1_pitch_decay[4];
 	osc1_pitch_decay[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC1_PITCH_DECAY][0],10);
@@ -142,14 +142,14 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 	osc1_pitch_release[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC1_PITCH_RELEASE][0],10);
 
 
-	
+
 	float osc1_pitch[4];
 	osc1_pitch[0] = stegosaurus_self->params[stegosaurus_KICK_OSC1_PITCH][0] * 128;
 	osc1_pitch[1] = stegosaurus_self->params[stegosaurus_SNARE_OSC1_PITCH][0] * 128;
 	osc1_pitch[2] = stegosaurus_self->params[stegosaurus_CLHAT_OSC1_PITCH][0] * 128;
 	osc1_pitch[3] = stegosaurus_self->params[stegosaurus_OPHAT_OSC1_PITCH][0] * 128;
 
-	float osc1_noise[4];	
+	float osc1_noise[4];
 	osc1_noise[0] = stegosaurus_self->params[stegosaurus_KICK_OSC1_NOISE][0];
 	osc1_noise[1] = stegosaurus_self->params[stegosaurus_SNARE_OSC1_NOISE][0];
 	osc1_noise[2] = stegosaurus_self->params[stegosaurus_CLHAT_OSC1_NOISE][0];
@@ -170,10 +170,10 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 	osc2_active[3] = stegosaurus_self->params[stegosaurus_OPHAT_OSC2_ACTIVE][0];
 
 	float osc2_amp_attack[4];
-	osc2_amp_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC2_AMP_ATTACK][0],10); 
-	osc2_amp_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC2_AMP_ATTACK][0],10); 
-	osc2_amp_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC2_AMP_ATTACK][0],10); 
-	osc2_amp_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC2_AMP_ATTACK][0],10); 
+	osc2_amp_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC2_AMP_ATTACK][0],10);
+	osc2_amp_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC2_AMP_ATTACK][0],10);
+	osc2_amp_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC2_AMP_ATTACK][0],10);
+	osc2_amp_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC2_AMP_ATTACK][0],10);
 
 	float osc2_amp_decay[4];
 	osc2_amp_decay[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC2_AMP_DECAY][0],10);
@@ -194,10 +194,10 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 	osc2_amp_release[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC2_AMP_RELEASE][0],10);
 
 	float osc2_pitch_attack[4];
-	osc2_pitch_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC2_PITCH_ATTACK][0],10); 
-	osc2_pitch_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC2_PITCH_ATTACK][0],10); 
-	osc2_pitch_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC2_PITCH_ATTACK][0],10); 
-	osc2_pitch_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC2_PITCH_ATTACK][0],10); 
+	osc2_pitch_attack[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC2_PITCH_ATTACK][0],10);
+	osc2_pitch_attack[1] = fast_pow(1-stegosaurus_self->params[stegosaurus_SNARE_OSC2_PITCH_ATTACK][0],10);
+	osc2_pitch_attack[2] = fast_pow(1-stegosaurus_self->params[stegosaurus_CLHAT_OSC2_PITCH_ATTACK][0],10);
+	osc2_pitch_attack[3] = fast_pow(1-stegosaurus_self->params[stegosaurus_OPHAT_OSC2_PITCH_ATTACK][0],10);
 
 	float osc2_pitch_decay[4];
 	osc2_pitch_decay[0] = fast_pow(1-stegosaurus_self->params[stegosaurus_KICK_OSC2_PITCH_DECAY][0],10);
@@ -248,7 +248,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 				{
 
 					// DO OSCILLATOR 1 ------------------------------------------------------
-			
+
 					if (osc1_active[v] && voices[v]->env_osc1_amp_state != ENV_STATE_DORMANT)
 					{
 
@@ -260,7 +260,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 
 
 						case ENV_STATE_ATTACK:
-							if (voices[v]->env_osc1_amp_level < 1) 
+							if (voices[v]->env_osc1_amp_level < 1)
 							{
 								voices[v]->env_osc1_amp_level += osc1_amp_attack[v];
 								if (voices[v]->env_osc1_amp_level >= 1)
@@ -274,8 +274,8 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 						// DECAY / SUSTAIN
 
 						case ENV_STATE_DECAY:
-						{	
-							if (voices[v]->env_osc1_amp_level > osc1_amp_sustain[v]) 
+						{
+							if (voices[v]->env_osc1_amp_level > osc1_amp_sustain[v])
 							{
 								voices[v]->env_osc1_amp_level -= osc1_amp_decay[v];
 									if (voices[v]->env_osc1_amp_level <= osc1_amp_sustain[v])
@@ -285,7 +285,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 									}
 							}
 
-							if (voices[v]->env_osc1_amp_level < osc1_amp_sustain[v] ) 
+							if (voices[v]->env_osc1_amp_level < osc1_amp_sustain[v] )
 							{
 								voices[v]->env_osc1_amp_level += osc1_amp_decay[v];
 									if (voices[v]->env_osc1_amp_level >= osc1_amp_sustain[v] )
@@ -299,7 +299,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							// RELEASE
 
 							case ENV_STATE_RELEASE:
-								if (voices[v]->env_osc1_amp_level > 0) 
+								if (voices[v]->env_osc1_amp_level > 0)
 								{
 									voices[v]->env_osc1_amp_level -= osc1_amp_release[v];
 									if (voices[v]->env_osc1_amp_level <= 0)
@@ -312,9 +312,9 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							}
 						}
 
-			
 
-					float env_osc1_amp_level_db = (voices[v]->env_osc1_amp_level * voices[v]->env_osc1_amp_level * voices[v]->env_osc1_amp_level) * master_volume; 
+
+					float env_osc1_amp_level_db = (voices[v]->env_osc1_amp_level * voices[v]->env_osc1_amp_level * voices[v]->env_osc1_amp_level) * master_volume;
 
 						//--------- ADSR pitch
 						// ATTACK
@@ -324,7 +324,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 
 
 						case ENV_STATE_ATTACK:
-							if (voices[v]->env_osc1_pitch_level < 1) 
+							if (voices[v]->env_osc1_pitch_level < 1)
 							{
 								voices[v]->env_osc1_pitch_level += osc1_pitch_attack[v];
 								if (voices[v]->env_osc1_pitch_level >= 1)
@@ -338,8 +338,8 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 						// DECAY / SUSTAIN
 
 						case ENV_STATE_DECAY:
-						{	
-							if (voices[v]->env_osc1_pitch_level > osc1_pitch_sustain[v]) 
+						{
+							if (voices[v]->env_osc1_pitch_level > osc1_pitch_sustain[v])
 							{
 								voices[v]->env_osc1_pitch_level -= osc1_pitch_decay[v];
 									if (voices[v]->env_osc1_pitch_level <= osc1_pitch_sustain[v] )
@@ -349,7 +349,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 									}
 							}
 
-							if (voices[v]->env_osc1_pitch_level < osc1_pitch_sustain[v]) 
+							if (voices[v]->env_osc1_pitch_level < osc1_pitch_sustain[v])
 							{
 								voices[v]->env_osc1_pitch_level += osc1_pitch_decay[v];
 									if (voices[v]->env_osc1_pitch_level >= osc1_pitch_sustain[v] )
@@ -363,7 +363,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							// RELEASE
 
 							case ENV_STATE_RELEASE:
-								if (voices[v]->env_osc1_pitch_level > 0) 
+								if (voices[v]->env_osc1_pitch_level > 0)
 								{
 									voices[v]->env_osc1_pitch_level -= osc1_pitch_release[v];
 									if (voices[v]->env_osc1_pitch_level <= 0)
@@ -376,23 +376,23 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							}
 						}
 
-					float env_osc1_pitch_level_db = voices[v]->env_osc1_pitch_level; 
+					float env_osc1_pitch_level_db = voices[v]->env_osc1_pitch_level;
 
-						voices[v]->osc[0].wave_mix = 0;	
+						voices[v]->osc[0].wave_mix = 0;
 
 						voices[v]->osc[0].wave1_number = 0;
 						voices[v]->osc[0].wave2_number = 0;
 						float new_pitch = osc1_pitch[v]  * env_osc1_pitch_level_db;
 						float pitch_mod = noise_tick() * osc1_noise[v];
-						new_pitch += pitch_mod * 512;	
+						new_pitch += pitch_mod * 512;
 						if (new_pitch < 0) new_pitch = 0;
 						voices[v]->osc[0].frequency = new_pitch;
 
-						out += (osc1_volume[v] * (wavetable_tick( &voices[v]->osc[0] ) * 0.5) * env_osc1_amp_level_db);	
+						out += (osc1_volume[v] * (wavetable_tick( &voices[v]->osc[0] ) * 0.5) * env_osc1_amp_level_db);
 					}
 
 					// DO OSCILLATOR 2 ------------------------------------------------------
-			
+
 					if (osc2_active[v] && voices[v]->env_osc2_amp_state != ENV_STATE_DORMANT)
 					{
 
@@ -404,7 +404,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 
 
 						case ENV_STATE_ATTACK:
-							if (voices[v]->env_osc2_amp_level < 1) 
+							if (voices[v]->env_osc2_amp_level < 1)
 							{
 								voices[v]->env_osc2_amp_level += osc2_amp_attack[v];
 								if (voices[v]->env_osc2_amp_level >= 1)
@@ -418,8 +418,8 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 						// DECAY / SUSTAIN
 
 						case ENV_STATE_DECAY:
-						{	
-							if (voices[v]->env_osc2_amp_level > osc2_amp_sustain[v] ) 
+						{
+							if (voices[v]->env_osc2_amp_level > osc2_amp_sustain[v] )
 							{
 								voices[v]->env_osc2_amp_level -= osc2_amp_decay[v];
 									if (voices[v]->env_osc2_amp_level <= osc2_amp_sustain[v])
@@ -429,7 +429,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 									}
 							}
 
-							if (voices[v]->env_osc2_amp_level < osc2_amp_sustain[v] ) 
+							if (voices[v]->env_osc2_amp_level < osc2_amp_sustain[v] )
 							{
 								voices[v]->env_osc2_amp_level += osc2_amp_decay[v];
 									if (voices[v]->env_osc2_amp_level >= osc2_amp_sustain[v] )
@@ -443,7 +443,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							// RELEASE
 
 							case ENV_STATE_RELEASE:
-								if (voices[v]->env_osc2_amp_level > 0) 
+								if (voices[v]->env_osc2_amp_level > 0)
 								{
 									voices[v]->env_osc2_amp_level -= osc2_amp_release[v] ;
 									if (voices[v]->env_osc2_amp_level <= 0)
@@ -456,9 +456,9 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							}
 						}
 
-			
 
-						float env_osc2_amp_level_db = voices[v]->volume * (voices[v]->env_osc2_amp_level * voices[v]->env_osc2_amp_level * voices[v]->env_osc2_amp_level) * master_volume; 
+
+						float env_osc2_amp_level_db = voices[v]->volume * (voices[v]->env_osc2_amp_level * voices[v]->env_osc2_amp_level * voices[v]->env_osc2_amp_level) * master_volume;
 
 						//--------- ADSR pitch
 						// ATTACK
@@ -468,7 +468,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 
 
 						case ENV_STATE_ATTACK:
-							if (voices[v]->env_osc2_pitch_level < 1) 
+							if (voices[v]->env_osc2_pitch_level < 1)
 							{
 								voices[v]->env_osc2_pitch_level += osc2_pitch_attack[v];
 								if (voices[v]->env_osc2_pitch_level >= 1)
@@ -482,8 +482,8 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 						// DECAY / SUSTAIN
 
 						case ENV_STATE_DECAY:
-						{	
-							if (voices[v]->env_osc2_pitch_level > osc2_pitch_sustain[v] ) 
+						{
+							if (voices[v]->env_osc2_pitch_level > osc2_pitch_sustain[v] )
 							{
 								voices[v]->env_osc2_pitch_level -= osc2_pitch_decay[v];
 									if (voices[v]->env_osc2_pitch_level <= osc2_pitch_sustain[v])
@@ -493,7 +493,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 									}
 							}
 
-							if (voices[v]->env_osc2_pitch_level < osc2_pitch_sustain[v] ) 
+							if (voices[v]->env_osc2_pitch_level < osc2_pitch_sustain[v] )
 							{
 								voices[v]->env_osc2_pitch_level += osc2_pitch_decay[v];
 									if (voices[v]->env_osc2_pitch_level >= osc2_pitch_sustain[v] )
@@ -507,7 +507,7 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							// RELEASE
 
 							case ENV_STATE_RELEASE:
-								if (voices[v]->env_osc2_pitch_level > 0) 
+								if (voices[v]->env_osc2_pitch_level > 0)
 								{
 									voices[v]->env_osc2_pitch_level -= osc2_pitch_release[v];
 									if (voices[v]->env_osc2_pitch_level <= 0)
@@ -520,22 +520,22 @@ void stegosaurus_synth_play(float* const out_left, float* const out_right, uint3
 							}
 						}
 
-						float env_osc2_pitch_level_db = voices[v]->env_osc2_pitch_level; 
+						float env_osc2_pitch_level_db = voices[v]->env_osc2_pitch_level;
 
-						voices[v]->osc[1].wave_mix = 0;	
+						voices[v]->osc[1].wave_mix = 0;
 
 						voices[v]->osc[1].wave1_number = 0;
 						voices[v]->osc[1].wave2_number = 0;
 						float new_pitch = osc2_pitch[v]  * env_osc2_pitch_level_db;
 						float pitch_mod = noise_tick() * osc2_noise[v];
-						new_pitch += pitch_mod * 512;	
+						new_pitch += pitch_mod * 512;
 						if (new_pitch < 0) new_pitch = 0;
 						voices[v]->osc[1].frequency = new_pitch;
 
-						out += voices[v]->volume *  (osc2_volume[v] * (wavetable_tick( &voices[v]->osc[1] ) * 0.5) * env_osc2_amp_level_db);	
+						out += voices[v]->volume *  (osc2_volume[v] * (wavetable_tick( &voices[v]->osc[1] ) * 0.5) * env_osc2_amp_level_db);
 
 
-					}	
+					}
 				}
 			}
 
@@ -552,7 +552,7 @@ void stegosaurus_synth_note_on(int note, int volume)
 
 	if (note == 60)
 	{
-		printf("Kick triggered..\n");
+		// printf("Kick triggered..\n");
 		voices[0]->active = true;
 		voices[0]->env_osc1_amp_state = ENV_STATE_ATTACK;
 		voices[0]->env_osc1_pitch_state = ENV_STATE_ATTACK;
@@ -569,7 +569,7 @@ void stegosaurus_synth_note_on(int note, int volume)
 
 	if (note == 62)
 	{
-		printf("Snare triggered..\n");
+		// printf("Snare triggered..\n");
 		voices[1]->active = true;
 		voices[1]->env_osc1_amp_state = ENV_STATE_ATTACK;
 		voices[1]->env_osc1_pitch_state = ENV_STATE_ATTACK;
@@ -586,7 +586,7 @@ void stegosaurus_synth_note_on(int note, int volume)
 
 	if (note == 64)
 	{
-		printf("Closed hat triggered..\n");
+		// printf("Closed hat triggered..\n");
 		voices[2]->active = true;
 		voices[2]->env_osc1_amp_state = ENV_STATE_ATTACK;
 		voices[2]->env_osc1_pitch_state = ENV_STATE_ATTACK;
@@ -603,7 +603,7 @@ void stegosaurus_synth_note_on(int note, int volume)
 
 	if (note == 65)
 	{
-		printf("Open hat triggered..\n");
+		// printf("Open hat triggered..\n");
 		voices[3]->active = true;
 		voices[3]->env_osc1_amp_state = ENV_STATE_ATTACK;
 		voices[3]->env_osc1_pitch_state = ENV_STATE_ATTACK;
@@ -646,7 +646,7 @@ int stegosaurus_synth_get_number_of_voices_playing()
 	if (voices[1]->active) number_of_voices_playing++;
 	if (voices[2]->active) number_of_voices_playing++;
 	if (voices[3]->active) number_of_voices_playing++;
-	
+
 	return number_of_voices_playing;
 }
 

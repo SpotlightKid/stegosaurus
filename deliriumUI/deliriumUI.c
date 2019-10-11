@@ -40,16 +40,16 @@ int addDeliriumUIWidget(deliriumUI* deliriumUI_window, deliriumUI_WidgetType wid
 
 
 	switch (widgetType)
-	{		
+	{
 		case deliriumUI_Fader:
 			deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 15;
 			deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 20;
-			break;	
+			break;
 
 		case deliriumUI_MicroKnob:
 			deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 20;
 			deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 20;
-			break;	
+			break;
 
 		case deliriumUI_Switch:
 			deliriumUIWidgets[numberOfUIWidgets-1].toggleMode = true;
@@ -148,7 +148,7 @@ void displayAllDeliriumUIWidgets(deliriumUI* deliriumUI_window, cairo_t* cr)
 	// cairo_set_source_rgb (cr, 0.2, 0.0, 0.0);
 	  cairo_rectangle(cr, 0, 0, 800, 500);
 	  cairo_set_source(cr, linpat);
-	  cairo_fill(cr);  
+	  cairo_fill(cr);
 
 	for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber)
 	{
@@ -198,7 +198,7 @@ void setValue(deliriumUI* deliriumUI_window, cairo_t* cr, int port_number, float
 	{
 		if (  deliriumUIWidgets[x].type != deliriumUI_ADSR)
 		{
-			if ( deliriumUIWidgets[x].port_number == port_number) widgetNumber = x;	
+			if ( deliriumUIWidgets[x].port_number == port_number) widgetNumber = x;
 		}
 
 		if (  deliriumUIWidgets[x].type == deliriumUI_ADSR)
@@ -229,7 +229,7 @@ void setValue(deliriumUI* deliriumUI_window, cairo_t* cr, int port_number, float
 		if (current_value == 2) unscaled_value = 1 - value;
 		if (current_value == 3) unscaled_value = 1 - value;
 
-	}	
+	}
 
 	deliriumUIWidgets[widgetNumber].values[current_value] = unscaled_value;
 
@@ -278,7 +278,7 @@ void decValue(deliriumUI* deliriumUI_window, cairo_t* cr)
 		if (current_value > 0) value = 1 - value;
 	}
 
-	printf("%d - %d - %f\n", widgetNumber, port_number, value);
+	// printf("%d - %d - %f\n", widgetNumber, port_number, value);
 
 	write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
 	displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
@@ -322,7 +322,7 @@ void incValue(deliriumUI* deliriumUI_window, cairo_t* cr)
 		if (current_value > 0) value = 1 - value;
 	}
 
-	printf("%d - %d - %f\n", widgetNumber, port_number, value);
+	// printf("%d - %d - %f\n", widgetNumber, port_number, value);
 
 	write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
 	displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
@@ -342,7 +342,7 @@ void zeroValue(deliriumUI* deliriumUI_window, cairo_t* cr)
 	if (widgetNumber==-1) return;
 
 	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
-	
+
 	port_number = deliriumUIWidgets[widgetNumber].port_number;
 	current_value = deliriumUIWidgets[widgetNumber].current_value;
 	value = (0 - deliriumUIWidgets[widgetNumber].min) / ((deliriumUIWidgets[widgetNumber].max - deliriumUIWidgets[widgetNumber].min));
@@ -384,7 +384,7 @@ void setValueFromMousePosition(deliriumUI* deliriumUI_window, int widgetNumber, 
 
 	float clickTop = h * (deliriumUIWidgets[widgetNumber].clickTop/100);
 	float clickBottom = h * (deliriumUIWidgets[widgetNumber].clickBottom/100);
-	
+
 	y += clickTop;
 	h -= (clickTop+clickBottom);
 
@@ -405,14 +405,14 @@ void setValueFromMousePosition(deliriumUI* deliriumUI_window, int widgetNumber, 
 	int port_number = deliriumUIWidgets[widgetNumber].port_number;
 	setValueDiliriumUIADSR(deliriumUI_window, widgetNumber, value );
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader)		
+	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader)
 	{
 		deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[0]
 				* (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
 		value = deliriumUIWidgets[widgetNumber].scaled_value;
 	}
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)		
+	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
 	{
 		port_number += deliriumUIWidgets[widgetNumber].current_value;
 	}
@@ -453,7 +453,7 @@ void isMouseOverDeliriumUIWidget(deliriumUI* deliriumUI_window, cairo_t* cr, int
 
 			if (!deliriumUI_window->mouseButton[1])
 			{
-				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h) 
+				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h)
 				{
 					deliriumUIWidgets[widgetNumber].hover = true;
 					deliriumUI_window->currentWidgetNumber = widgetNumber;
@@ -484,12 +484,12 @@ void hasMouseClickedDeliriumUIWidget(deliriumUI* deliriumUI_window, int _x, int 
 	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
 	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
 
-						
+
 
 	for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber)
 	{
 		bool show_it = deliriumUI_window->group_visible[ deliriumUI_window->deliriumUIWidgets[widgetNumber].group ];
-					
+
 		if (show_it)
 		{
 
@@ -500,16 +500,16 @@ void hasMouseClickedDeliriumUIWidget(deliriumUI* deliriumUI_window, int _x, int 
 
 			w -= 2;
 			h -= 2;
-	
+
 			if (!deliriumUIWidgets[widgetNumber].toggleMode)
 			{
-				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h) 
+				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h)
 				{
 					deliriumUIWidgets[widgetNumber].pressed = true;
 
-					if ( deliriumUIWidgets[widgetNumber]. port_number < 0) 
+					if ( deliriumUIWidgets[widgetNumber]. port_number < 0)
 					{
-				
+
 						for (int x=1; x<5; x++)
 						{
 							if ( x!= -deliriumUIWidgets[widgetNumber]. port_number)
@@ -544,12 +544,12 @@ void hasMouseClickedDeliriumUIWidget(deliriumUI* deliriumUI_window, int _x, int 
 			}
 			else
 			{
-				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h) 
+				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h)
 				{
 					deliriumUIWidgets[widgetNumber].pressed = 1-deliriumUIWidgets[widgetNumber].pressed;
 					if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch)
 					{
-						deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;	
+						deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
 
 						write_function( controller,deliriumUIWidgets[widgetNumber]. port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
 

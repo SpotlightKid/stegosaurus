@@ -106,7 +106,7 @@ onScroll(PuglView* view, int x, int y, float dx, float dy)
 	stegosaurusUI* self = (stegosaurusUI*)puglGetHandle(view);
 	cairo_t* cr = puglGetContext(view);
 
-	if (dy!=0) 
+	if (dy!=0)
 	{
 
 		if (dy == -1)
@@ -140,7 +140,7 @@ instantiate(const LV2UI_Descriptor*   descriptor,
 	self->controller = controller;
 	self->width      = 800;
 	self->height     = 360;
-	self->exit       = false;	
+	self->exit       = false;
 
 	self->deliriumUI_window.deliriumUIWidgets = NULL;
 	self->deliriumUI_window.numberOfUIWidgets = 1;
@@ -149,8 +149,8 @@ instantiate(const LV2UI_Descriptor*   descriptor,
 	for (int b=0; b<16; ++b)
 	{
 		self->deliriumUI_window.mouseButton[b] = 0;
-		self->deliriumUI_window.group_visible[b] = false; 
-		self->deliriumUI_window.group_visible[b+16] = false; 
+		self->deliriumUI_window.group_visible[b] = false;
+		self->deliriumUI_window.group_visible[b+16] = false;
 	}
 
 	setDeliriumUIGridSize(&self->deliriumUI_window, self->width, self->height, 16, 12);
@@ -160,7 +160,7 @@ instantiate(const LV2UI_Descriptor*   descriptor,
 	PuglNativeWindow parent = 0;
 	LV2UI_Resize*    resize = NULL;
 	for (int i = 0; features && features[i]; ++i) {
-		printf("Feature %s\n", features[i]->URI );
+		// printf("Feature %s\n", features[i]->URI );
 		if (!strcmp(features[i]->URI, LV2_UI__parent)) {
 			parent = (PuglNativeWindow)features[i]->data;
 		} else if (!strcmp(features[i]->URI, LV2_UI__resize)) {
@@ -314,7 +314,7 @@ port_event(LV2UI_Handle handle,
 
 	setValue(&self->deliriumUI_window, cr, port_index, value);
 
-	
+
 }
 
 static const LV2UI_Idle_Interface idle_iface = { idle };
