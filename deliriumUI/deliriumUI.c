@@ -1,585 +1,522 @@
-
 #include "deliriumUI.h"
+
 
 //------------------------------------------------------------------
 // Add Widget
 
-int addDeliriumUIWidget(deliriumUI* deliriumUI_window, deliriumUI_WidgetType widgetType, int group, float _x, float _y, float _w, float _h, char* _label, int port_number)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+int addDeliriumUIWidget(deliriumUI* deliriumUI_window, deliriumUI_WidgetType widgetType, int group,
+                        float _x, float _y, float _w, float _h, char* _label, int port_number) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    deliriumUIWidgets = realloc(deliriumUIWidgets, sizeof(deliriumUIWidget) * numberOfUIWidgets);
+    deliriumUI_window->deliriumUIWidgets = deliriumUIWidgets;
 
-	deliriumUIWidgets = realloc( deliriumUIWidgets, sizeof(deliriumUIWidget) * numberOfUIWidgets );
+    deliriumUIWidgets[numberOfUIWidgets-1].type = widgetType;
+    deliriumUIWidgets[numberOfUIWidgets-1].x = _x;
+    deliriumUIWidgets[numberOfUIWidgets-1].x = _x;
+    deliriumUIWidgets[numberOfUIWidgets-1].y = _y;
+    deliriumUIWidgets[numberOfUIWidgets-1].w = _w;
+    deliriumUIWidgets[numberOfUIWidgets-1].h = _h;
+    deliriumUIWidgets[numberOfUIWidgets-1].pressed = false;
+    deliriumUIWidgets[numberOfUIWidgets-1].hover = false;
+    deliriumUIWidgets[numberOfUIWidgets-1].label = _label;
+    deliriumUIWidgets[numberOfUIWidgets-1].min = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].max = 1;
+    deliriumUIWidgets[numberOfUIWidgets-1].increment = 0.01;
+    deliriumUIWidgets[numberOfUIWidgets-1].toggleMode = false;
+    deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].group= group;
+    deliriumUIWidgets[numberOfUIWidgets-1].port_number = port_number;
+    deliriumUIWidgets[numberOfUIWidgets-1].values[0] = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].values[1] = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].values[2] = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].values[3] = 0;
+    deliriumUIWidgets[numberOfUIWidgets-1].current_value = 0;
 
-	deliriumUI_window->deliriumUIWidgets = deliriumUIWidgets;
+    switch (widgetType) {
+        case deliriumUI_ADSR:
+            break;
 
-	deliriumUIWidgets[numberOfUIWidgets-1].type = widgetType;
-	deliriumUIWidgets[numberOfUIWidgets-1].x = _x;
-	deliriumUIWidgets[numberOfUIWidgets-1].x = _x;
-	deliriumUIWidgets[numberOfUIWidgets-1].y = _y;
-	deliriumUIWidgets[numberOfUIWidgets-1].w = _w;
-	deliriumUIWidgets[numberOfUIWidgets-1].h = _h;
-	deliriumUIWidgets[numberOfUIWidgets-1].pressed = false;
-	deliriumUIWidgets[numberOfUIWidgets-1].hover = false;
-	deliriumUIWidgets[numberOfUIWidgets-1].label = _label;
-	deliriumUIWidgets[numberOfUIWidgets-1].min = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].max = 1;
-	deliriumUIWidgets[numberOfUIWidgets-1].increment = 0.01;
-	deliriumUIWidgets[numberOfUIWidgets-1].toggleMode = false;
-	deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].group= group;
-	deliriumUIWidgets[numberOfUIWidgets-1].port_number = port_number;
+        case deliriumUI_Button:
+            break;
 
+        case deliriumUI_Fader:
+            deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 15;
+            deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 20;
+            break;
 
-	deliriumUIWidgets[numberOfUIWidgets-1].values[0] = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].values[1] = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].values[2] = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].values[3] = 0;
-	deliriumUIWidgets[numberOfUIWidgets-1].current_value = 0;
+        case deliriumUI_Knob:
+            break;
 
+        case deliriumUI_MicroKnob:
+            deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 20;
+            deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 20;
+            break;
 
-	switch (widgetType)
-	{
-		case deliriumUI_Fader:
-			deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 15;
-			deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 20;
-			break;
+        case deliriumUI_Switch:
+            deliriumUIWidgets[numberOfUIWidgets-1].toggleMode = true;
+            break;
+    }
 
-		case deliriumUI_MicroKnob:
-			deliriumUIWidgets[numberOfUIWidgets-1].clickTop = 20;
-			deliriumUIWidgets[numberOfUIWidgets-1].clickBottom = 20;
-			break;
+    numberOfUIWidgets++;
 
-		case deliriumUI_Switch:
-			deliriumUIWidgets[numberOfUIWidgets-1].toggleMode = true;
-			break;
-	}
+    deliriumUI_window->numberOfUIWidgets = numberOfUIWidgets;
 
-
-
-	numberOfUIWidgets++;
-
-	deliriumUI_window->numberOfUIWidgets = numberOfUIWidgets;
-
-	return numberOfUIWidgets-1; // return handle number
+    return numberOfUIWidgets-1; // return handle number
 }
-
-
 
 //------------------------------------------------------------------
 // set packing grid size
 
-void setDeliriumUIGridSize(deliriumUI* deliriumUI_window, int _w, int _h, int _x, int _y)
-{
-	deliriumUI_window->originalWidth = _w;
-	deliriumUI_window->originalHeight = _h;
-	deliriumUI_window->currentWidth = _w;
-	deliriumUI_window->currentHeight = _h;
-	deliriumUI_window->gridX = _x;
-	deliriumUI_window->gridY = _y;
-	deliriumUI_window->widgetWidth = _w / _x;
-	deliriumUI_window->widgetHeight = _h / _y;
+void setDeliriumUIGridSize(deliriumUI* deliriumUI_window, int _w, int _h, int _x, int _y) {
+    deliriumUI_window->originalWidth = _w;
+    deliriumUI_window->originalHeight = _h;
+    deliriumUI_window->currentWidth = _w;
+    deliriumUI_window->currentHeight = _h;
+    deliriumUI_window->gridX = _x;
+    deliriumUI_window->gridY = _y;
+    deliriumUI_window->widgetWidth = _w / _x;
+    deliriumUI_window->widgetHeight = _h / _y;
 }
 
 //------------------------------------------------------------------
 // set current window size
 
-void setDeliriumUICurrentWindowSize(deliriumUI* deliriumUI_window, int _w, int _h)
-{
-	deliriumUI_window->currentWidth = _w;
-	deliriumUI_window->currentHeight = _h;
-	deliriumUI_window->widgetWidth = _w / deliriumUI_window->gridX;
-	deliriumUI_window->widgetHeight = _h / deliriumUI_window->gridY;
+void setDeliriumUICurrentWindowSize(deliriumUI* deliriumUI_window, int _w, int _h) {
+    deliriumUI_window->currentWidth = _w;
+    deliriumUI_window->currentHeight = _h;
+    deliriumUI_window->widgetWidth = _w / deliriumUI_window->gridX;
+    deliriumUI_window->widgetHeight = _h / deliriumUI_window->gridY;
 }
 
 //------------------------------------------------------------------
 // Display widget
-void displayDeliriumUIWidget(deliriumUI* deliriumUI_window, cairo_t* cr, int widgetNumber)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
 
-	deliriumUI_WidgetType type = deliriumUIWidgets[widgetNumber].type;
+void displayDeliriumUIWidget(deliriumUI* deliriumUI_window, cairo_t* cr, int widgetNumber) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    deliriumUI_WidgetType type = deliriumUIWidgets[widgetNumber].type;
 
-	switch (type)
-	{
-		case deliriumUI_Button:
-			displayDiliriumUIButton(deliriumUI_window, cr, widgetNumber);
-			break;
+    switch (type) {
+        case deliriumUI_Button:
+            displayDeliriumUIButton(deliriumUI_window, cr, widgetNumber);
+            break;
 
-		case deliriumUI_Knob:
-			displayDiliriumUIKnob(deliriumUI_window, cr, widgetNumber);
-			break;
+        case deliriumUI_Knob:
+            displayDeliriumUIKnob(deliriumUI_window, cr, widgetNumber);
+            break;
 
-		case deliriumUI_MicroKnob:
-			displayDiliriumUIMicroKnob(deliriumUI_window, cr, widgetNumber);
-			break;
+        case deliriumUI_MicroKnob:
+            displayDeliriumUIMicroKnob(deliriumUI_window, cr, widgetNumber);
+            break;
 
-		case deliriumUI_Fader:
-			displayDiliriumUIFader(deliriumUI_window, cr, widgetNumber);
-			break;
+        case deliriumUI_Fader:
+            displayDeliriumUIFader(deliriumUI_window, cr, widgetNumber);
+            break;
 
-		case deliriumUI_Switch:
-			displayDiliriumUISwitch(deliriumUI_window, cr, widgetNumber);
-			break;
+        case deliriumUI_Switch:
+            displayDeliriumUISwitch(deliriumUI_window, cr, widgetNumber);
+            break;
 
-		case deliriumUI_ADSR:
-			displayDiliriumUIADSR(deliriumUI_window, cr, widgetNumber);
-			break;
-	}
+        case deliriumUI_ADSR:
+            displayDeliriumUIADSR(deliriumUI_window, cr, widgetNumber);
+            break;
+    }
 }
 
 //------------------------------------------------------------------
 // Display all widgets
 
-void displayAllDeliriumUIWidgets(deliriumUI* deliriumUI_window, cairo_t* cr)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+void displayAllDeliriumUIWidgets(deliriumUI* deliriumUI_window, cairo_t* cr) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
 
-	cairo_pattern_t *linpat;
+    cairo_pattern_t *linpat;
 
-	linpat = cairo_pattern_create_linear (0,0,0,500);
-	cairo_pattern_add_color_stop_rgb(linpat, 0, 0.1, 0, 0);
-	cairo_pattern_add_color_stop_rgb(linpat, 0.5, 0.3, 0, 0);
-	cairo_pattern_add_color_stop_rgb(linpat, 1, 0.2, 0, 0);
+    linpat = cairo_pattern_create_linear (0,0,0,500);
+    cairo_pattern_add_color_stop_rgb(linpat, 0, 0.1, 0, 0);
+    cairo_pattern_add_color_stop_rgb(linpat, 0.5, 0.3, 0, 0);
+    cairo_pattern_add_color_stop_rgb(linpat, 1, 0.2, 0, 0);
 
-	/* Set surface to opaque color (r, g, b) */
-	// cairo_set_source_rgb (cr, 0.2, 0.0, 0.0);
-	  cairo_rectangle(cr, 0, 0, 800, 500);
-	  cairo_set_source(cr, linpat);
-	  cairo_fill(cr);
+    /* Set surface to opaque color (r, g, b) */
+    // cairo_set_source_rgb (cr, 0.2, 0.0, 0.0);
+    cairo_rectangle(cr, 0, 0, 800, 500);
+    cairo_set_source(cr, linpat);
+    cairo_fill(cr);
 
-	for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber)
-	{
-		bool show_it = deliriumUI_window->group_visible[ deliriumUI_window->deliriumUIWidgets[widgetNumber].group ];
-		if (show_it) displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
-	}
+    for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber) {
+        bool show_it = deliriumUI_window->group_visible[deliriumUIWidgets[widgetNumber].group];
+
+        if (show_it) {
+            displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
+        }
+    }
 }
 
 //--------------------------------------------------------------------------
 
-void setControllerDiliriumUI(LV2UI_Controller _controller, LV2UI_Write_Function _write_function)
-{
-	controller = _controller;
-	write_function = _write_function;
+void setControllerDeliriumUI(LV2UI_Controller _controller, LV2UI_Write_Function _write_function) {
+    controller = _controller;
+    write_function = _write_function;
 }
 
 //--------------------------------------------------------------------------
 
-void setMinMax(deliriumUI* deliriumUI_window, int port_number, float min, float max)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
-	int widgetNumber=-1;
+void setMinMax(deliriumUI* deliriumUI_window, int port_number, float min, float max) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    int widgetNumber=-1;
 
-	for (int x=0; x<numberOfUIWidgets; x++)
-	{
-		if ( deliriumUIWidgets[x].port_number == port_number) widgetNumber = x;
-	}
+    for (int x=0; x<numberOfUIWidgets; x++) {
+        if (deliriumUIWidgets[x].port_number == port_number) widgetNumber = x;
+    }
 
-	if (widgetNumber==-1) return;
+    if (widgetNumber==-1) return;
 
-	deliriumUIWidgets[widgetNumber].min = min;
-	deliriumUIWidgets[widgetNumber].max = max;
-}
-
-
-//--------------------------------------------------------------------------
-
-void setValue(deliriumUI* deliriumUI_window, cairo_t* cr, int port_number, float value)
-{
-
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
-	int widgetNumber=-1;
-
-	for (int x=0; x<numberOfUIWidgets; x++)
-	{
-		if (  deliriumUIWidgets[x].type != deliriumUI_ADSR)
-		{
-			if ( deliriumUIWidgets[x].port_number == port_number) widgetNumber = x;
-		}
-
-		if (  deliriumUIWidgets[x].type == deliriumUI_ADSR)
-		{
-			if (deliriumUIWidgets[x].port_number == port_number ||
-				deliriumUIWidgets[x].port_number+1 == port_number ||
-				deliriumUIWidgets[x].port_number+2 == port_number ||
-				deliriumUIWidgets[x].port_number+3 == port_number)
-				{
-					widgetNumber = x;
-				}
-		}
-	}
-
-	if (widgetNumber==-1) return;
-
-	int current_value =  port_number - deliriumUIWidgets[widgetNumber].port_number;
-
-
-	float unscaled_value = value / ((deliriumUIWidgets[widgetNumber].max - deliriumUIWidgets[widgetNumber].min));
-
-	if ( deliriumUIWidgets[widgetNumber].min < 0) unscaled_value += 0.5;
-
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-	{
-		if (current_value == 0) unscaled_value = value;
-		if (current_value == 1) unscaled_value = 1 - value;
-		if (current_value == 2) unscaled_value = 1 - value;
-		if (current_value == 3) unscaled_value = 1 - value;
-
-	}
-
-	deliriumUIWidgets[widgetNumber].values[current_value] = unscaled_value;
-
-	deliriumUIWidgets[widgetNumber].scaled_value = value;
-
-
-	displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
-	write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
+    deliriumUIWidgets[widgetNumber].min = min;
+    deliriumUIWidgets[widgetNumber].max = max;
 }
 
 //--------------------------------------------------------------------------
 
-void decValue(deliriumUI* deliriumUI_window, cairo_t* cr)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
-	int widgetNumber=deliriumUI_window->currentWidgetNumber;
-	int port_number = -1;
-	float value = -1;
-	int current_value = 0;
+void setValue(deliriumUI* deliriumUI_window, cairo_t* cr, int port_number, float value) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    int widgetNumber=-1;
 
-	if (widgetNumber==-1) return;
+    for (int x=0; x<numberOfUIWidgets; x++) {
+        if ( deliriumUIWidgets[x].type != deliriumUI_ADSR) {
+            if ( deliriumUIWidgets[x].port_number == port_number) widgetNumber = x;
+        }
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
+        if (deliriumUIWidgets[x].type == deliriumUI_ADSR) {
+            if (deliriumUIWidgets[x].port_number == port_number ||
+                    deliriumUIWidgets[x].port_number+1 == port_number ||
+                    deliriumUIWidgets[x].port_number+2 == port_number ||
+                    deliriumUIWidgets[x].port_number+3 == port_number) {
+                widgetNumber = x;
+            }
+        }
+    }
 
-	port_number = deliriumUIWidgets[widgetNumber].port_number;
-	current_value = deliriumUIWidgets[widgetNumber].current_value;
-	value = deliriumUIWidgets[widgetNumber].values[current_value] - deliriumUIWidgets[widgetNumber].increment;
+    if (widgetNumber==-1) return;
 
-	if (value < 0) value = 0;
-	if (value > 1) value = 1;
+    int current_value =  port_number - deliriumUIWidgets[widgetNumber].port_number;
 
-	deliriumUIWidgets[widgetNumber].values[current_value] = value;
-	deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[current_value]
-			* (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
+    float unscaled_value = value / ((deliriumUIWidgets[widgetNumber].max - deliriumUIWidgets[widgetNumber].min));
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader)
-	{
-		value = deliriumUIWidgets[widgetNumber].scaled_value;
-	}
+    if (deliriumUIWidgets[widgetNumber].min < 0) unscaled_value += 0.5;
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-	{
-		value = deliriumUIWidgets[widgetNumber].values[current_value];
-		if (current_value > 0) port_number = deliriumUIWidgets[widgetNumber].port_number + current_value;
-		if (current_value > 0) value = 1 - value;
-	}
+    if (deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
+        if (current_value == 0) unscaled_value = value;
+        if (current_value == 1) unscaled_value = 1 - value;
+        if (current_value == 2) unscaled_value = 1 - value;
+        if (current_value == 3) unscaled_value = 1 - value;
 
-	// printf("%d - %d - %f\n", widgetNumber, port_number, value);
+    }
 
-	write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
-	displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
+    deliriumUIWidgets[widgetNumber].values[current_value] = unscaled_value;
+    deliriumUIWidgets[widgetNumber].scaled_value = value;
+    displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
+    write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
 }
 
 //--------------------------------------------------------------------------
 
-void incValue(deliriumUI* deliriumUI_window, cairo_t* cr)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
-	int widgetNumber=deliriumUI_window->currentWidgetNumber;
-	int port_number = -1;
-	float value = -1;
-	int current_value = 0;
+void decValue(deliriumUI* deliriumUI_window, cairo_t* cr) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    // int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    int widgetNumber=deliriumUI_window->currentWidgetNumber;
+    int port_number = -1;
+    float value = -1;
+    int current_value = 0;
 
-	if (widgetNumber==-1) return;
+    if (widgetNumber==-1) return;
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
+    if (deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
 
-	port_number = deliriumUIWidgets[widgetNumber].port_number;
-	current_value = deliriumUIWidgets[widgetNumber].current_value;
-	value = deliriumUIWidgets[widgetNumber].values[current_value] + deliriumUIWidgets[widgetNumber].increment;
+    port_number = deliriumUIWidgets[widgetNumber].port_number;
+    current_value = deliriumUIWidgets[widgetNumber].current_value;
+    value = deliriumUIWidgets[widgetNumber].values[current_value] - deliriumUIWidgets[widgetNumber].increment;
 
-	if (value < 0) value = 0;
-	if (value > 1) value = 1;
+    if (value < 0) value = 0;
+    if (value > 1) value = 1;
 
-	deliriumUIWidgets[widgetNumber].values[current_value] = value;
-	deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[current_value]
-			* (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
+    deliriumUIWidgets[widgetNumber].values[current_value] = value;
+    deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + (
+        deliriumUIWidgets[widgetNumber].values[current_value] *
+        (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min)
+    );
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader)
-	{
-		value = deliriumUIWidgets[widgetNumber].scaled_value;
-	}
+    if (deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader) {
+        value = deliriumUIWidgets[widgetNumber].scaled_value;
+    }
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-	{
-		value = deliriumUIWidgets[widgetNumber].values[current_value];
-		if (current_value > 0) port_number = deliriumUIWidgets[widgetNumber].port_number + current_value;
-		if (current_value > 0) value = 1 - value;
-	}
+    if (deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
+        value = deliriumUIWidgets[widgetNumber].values[current_value];
+        if (current_value > 0) port_number = deliriumUIWidgets[widgetNumber].port_number + current_value;
+        if (current_value > 0) value = 1 - value;
+    }
 
-	// printf("%d - %d - %f\n", widgetNumber, port_number, value);
+    // printf("%d - %d - %f\n", widgetNumber, port_number, value);
 
-	write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
-	displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
+    write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
+    displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
 }
 
 //--------------------------------------------------------------------------
 
-void zeroValue(deliriumUI* deliriumUI_window, cairo_t* cr)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
-	int widgetNumber=deliriumUI_window->currentWidgetNumber;
-	int port_number = -1;
-	float value = -1;
-	int current_value = 0;
+void incValue(deliriumUI* deliriumUI_window, cairo_t* cr) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    // int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    int widgetNumber=deliriumUI_window->currentWidgetNumber;
+    int port_number = -1;
+    float value = -1;
+    int current_value = 0;
 
-	if (widgetNumber==-1) return;
+    if (widgetNumber==-1) return;
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
 
-	port_number = deliriumUIWidgets[widgetNumber].port_number;
-	current_value = deliriumUIWidgets[widgetNumber].current_value;
-	value = (0 - deliriumUIWidgets[widgetNumber].min) / ((deliriumUIWidgets[widgetNumber].max - deliriumUIWidgets[widgetNumber].min));
+    port_number = deliriumUIWidgets[widgetNumber].port_number;
+    current_value = deliriumUIWidgets[widgetNumber].current_value;
+    value = deliriumUIWidgets[widgetNumber].values[current_value] + deliriumUIWidgets[widgetNumber].increment;
 
-	if (value < 0) value = 0;
-	if (value > 1) value = 1;
+    if (value < 0) value = 0;
+    if (value > 1) value = 1;
 
-	deliriumUIWidgets[widgetNumber].values[current_value] = value;
-	deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[current_value]
-			* (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
+    deliriumUIWidgets[widgetNumber].values[current_value] = value;
+    deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[current_value]
+            * (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader)
-	{
-		value = deliriumUIWidgets[widgetNumber].scaled_value;
-	}
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader) {
+        value = deliriumUIWidgets[widgetNumber].scaled_value;
+    }
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-	{
-		value = deliriumUIWidgets[widgetNumber].values[current_value];
-		if (current_value > 0) port_number = deliriumUIWidgets[widgetNumber].port_number + current_value;
-		if (current_value > 0) value = 1 - value;
-	}
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
+        value = deliriumUIWidgets[widgetNumber].values[current_value];
+        if (current_value > 0) port_number = deliriumUIWidgets[widgetNumber].port_number + current_value;
+        if (current_value > 0) value = 1 - value;
+    }
 
-	displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
-	write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
+    // printf("%d - %d - %f\n", widgetNumber, port_number, value);
+
+    write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
+    displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
 }
+
 //--------------------------------------------------------------------------
 
-void setValueFromMousePosition(deliriumUI* deliriumUI_window, int widgetNumber, int _x, int _y)
-{
+void zeroValue(deliriumUI* deliriumUI_window, cairo_t* cr) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    //int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    int widgetNumber=deliriumUI_window->currentWidgetNumber;
+    int port_number = -1;
+    float value = -1;
+    int current_value = 0;
 
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+    if (widgetNumber==-1) return;
 
-	float x = deliriumUIWidgets[widgetNumber].x * deliriumUI_window->widgetWidth;
-	float y = deliriumUIWidgets[widgetNumber].y * deliriumUI_window->widgetHeight;
-	float w = deliriumUIWidgets[widgetNumber].w * deliriumUI_window->widgetWidth;
-	float h = deliriumUIWidgets[widgetNumber].h * deliriumUI_window->widgetHeight;
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) return;
 
-	float clickTop = h * (deliriumUIWidgets[widgetNumber].clickTop/100);
-	float clickBottom = h * (deliriumUIWidgets[widgetNumber].clickBottom/100);
+    port_number = deliriumUIWidgets[widgetNumber].port_number;
+    current_value = deliriumUIWidgets[widgetNumber].current_value;
+    value = (0 - deliriumUIWidgets[widgetNumber].min) / ((deliriumUIWidgets[widgetNumber].max - deliriumUIWidgets[widgetNumber].min));
 
-	y += clickTop;
-	h -= (clickTop+clickBottom);
+    if (value < 0) value = 0;
+    if (value > 1) value = 1;
 
-	float value = (_y - y) / h;
+    deliriumUIWidgets[widgetNumber].values[current_value] = value;
+    deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[current_value]
+            * (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
 
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader) {
+        value = deliriumUIWidgets[widgetNumber].scaled_value;
+    }
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-	{
-		value = (_y - y) / ((h/2) + (h/6));
-	}
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
+        value = deliriumUIWidgets[widgetNumber].values[current_value];
+        if (current_value > 0) port_number = deliriumUIWidgets[widgetNumber].port_number + current_value;
+        if (current_value > 0) value = 1 - value;
+    }
 
+    displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
+    write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
+}
 
-	 value = 1-value;
+//--------------------------------------------------------------------------
 
-	if (value < 0) value = 0;
-	if (value > 1) value = 1;
+void setValueFromMousePosition(deliriumUI* deliriumUI_window, int widgetNumber, int _x, int _y) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    // int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
 
-	int port_number = deliriumUIWidgets[widgetNumber].port_number;
-	setValueDiliriumUIADSR(deliriumUI_window, widgetNumber, value );
+    // float x = deliriumUIWidgets[widgetNumber].x * deliriumUI_window->widgetWidth;
+    float y = deliriumUIWidgets[widgetNumber].y * deliriumUI_window->widgetHeight;
+    // float w = deliriumUIWidgets[widgetNumber].w * deliriumUI_window->widgetWidth;
+    float h = deliriumUIWidgets[widgetNumber].h * deliriumUI_window->widgetHeight;
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader)
-	{
-		deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + ( deliriumUIWidgets[widgetNumber].values[0]
-				* (deliriumUIWidgets[widgetNumber].max-deliriumUIWidgets[widgetNumber].min));
-		value = deliriumUIWidgets[widgetNumber].scaled_value;
-	}
+    float clickTop = h * (deliriumUIWidgets[widgetNumber].clickTop/100);
+    float clickBottom = h * (deliriumUIWidgets[widgetNumber].clickBottom/100);
 
-	if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-	{
-		port_number += deliriumUIWidgets[widgetNumber].current_value;
-	}
+    y += clickTop;
+    h -= (clickTop+clickBottom);
 
-	deliriumUIWidgets[widgetNumber].hover = true;
-	if (controller,port_number > -1)
-		write_function( controller,port_number, sizeof(float), 0, (const void*)&value);
+    float value = (_y - y) / h;
+
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
+        value = (_y - y) / ((h/2) + (h/6));
+    }
+
+    value = 1-value;
+
+    if (value < 0) value = 0;
+    if (value > 1) value = 1;
+
+    int port_number = deliriumUIWidgets[widgetNumber].port_number;
+    setValueDeliriumUIADSR(deliriumUI_window, widgetNumber, value );
+
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Fader) {
+        deliriumUIWidgets[widgetNumber].scaled_value = deliriumUIWidgets[widgetNumber].min + (
+            deliriumUIWidgets[widgetNumber].values[0] *
+            (deliriumUIWidgets[widgetNumber].max - deliriumUIWidgets[widgetNumber].min)
+        );
+        value = deliriumUIWidgets[widgetNumber].scaled_value;
+    }
+
+    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
+        port_number += deliriumUIWidgets[widgetNumber].current_value;
+    }
+
+    deliriumUIWidgets[widgetNumber].hover = true;
+    if (port_number > -1)
+        write_function(controller, port_number, sizeof(float), 0, (const void*)&value);
 }
 
 //------------------------------------------------------------------
 // check if mouse is hovering over widget
-void isMouseOverDeliriumUIWidget(deliriumUI* deliriumUI_window, cairo_t* cr, int _x, int _y)
-{
 
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+void isMouseOverDeliriumUIWidget(deliriumUI* deliriumUI_window, cairo_t* cr, int _x, int _y) {
 
-	deliriumUI_window->currentWidgetNumber = -1;
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
 
-	for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber)
-	{
-		int group = deliriumUIWidgets[widgetNumber].group;
+    deliriumUI_window->currentWidgetNumber = -1;
 
-		if (deliriumUI_window->group_visible[group])
-		{
+    for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber) {
+        int group = deliriumUIWidgets[widgetNumber].group;
 
-			float x = deliriumUIWidgets[widgetNumber].x * deliriumUI_window->widgetWidth;
-			float y = deliriumUIWidgets[widgetNumber].y * deliriumUI_window->widgetHeight;
-			float w = deliriumUIWidgets[widgetNumber].w * deliriumUI_window->widgetWidth;
-			float h = deliriumUIWidgets[widgetNumber].h * deliriumUI_window->widgetHeight;
+        if (deliriumUI_window->group_visible[group]) {
 
-			if (deliriumUIWidgets[widgetNumber].pressed && deliriumUIWidgets[widgetNumber].type!=deliriumUI_Switch)
-			{
+            float x = deliriumUIWidgets[widgetNumber].x * deliriumUI_window->widgetWidth;
+            float y = deliriumUIWidgets[widgetNumber].y * deliriumUI_window->widgetHeight;
+            float w = deliriumUIWidgets[widgetNumber].w * deliriumUI_window->widgetWidth;
+            float h = deliriumUIWidgets[widgetNumber].h * deliriumUI_window->widgetHeight;
 
-				setValueFromMousePosition(deliriumUI_window, widgetNumber, _x, _y);
-				displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
-			}
+            if (deliriumUIWidgets[widgetNumber].pressed && deliriumUIWidgets[widgetNumber].type!=deliriumUI_Switch) {
 
-			if (!deliriumUI_window->mouseButton[1])
-			{
-				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h)
-				{
-					deliriumUIWidgets[widgetNumber].hover = true;
-					deliriumUI_window->currentWidgetNumber = widgetNumber;
+                setValueFromMousePosition(deliriumUI_window, widgetNumber, _x, _y);
+                displayDeliriumUIWidget(deliriumUI_window, cr, widgetNumber);
+            }
+
+            if (!deliriumUI_window->mouseButton[1]) {
+                if (_x>=x && _y>=y && _x<=x+w && _y<=y+h) {
+                    deliriumUIWidgets[widgetNumber].hover = true;
+                    deliriumUI_window->currentWidgetNumber = widgetNumber;
 
 
-					if (deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR)
-					{
+                    if (deliriumUIWidgets[widgetNumber].type == deliriumUI_ADSR) {
 
-						int current_value = ((_x-(int)x) / (w/4));
-						deliriumUIWidgets[widgetNumber].current_value = current_value;
-					}
-				}
-				else
-				{
-					deliriumUIWidgets[widgetNumber].hover = false;
-				}
-			}
-		}
-	}
+                        int current_value = ((_x-(int)x) / (w/4));
+                        deliriumUIWidgets[widgetNumber].current_value = current_value;
+                    }
+                }
+                else {
+                    deliriumUIWidgets[widgetNumber].hover = false;
+                }
+            }
+        }
+    }
 }
-
 
 //------------------------------------------------------------------
 // check if widget has been clicked by mouse button
 
-void hasMouseClickedDeliriumUIWidget(deliriumUI* deliriumUI_window, int _x, int _y)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
-	int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
+void hasMouseClickedDeliriumUIWidget(deliriumUI* deliriumUI_window, int _x, int _y) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+    int numberOfUIWidgets = deliriumUI_window->numberOfUIWidgets;
 
+    for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber) {
+        bool show_it = deliriumUI_window->group_visible[ deliriumUI_window->deliriumUIWidgets[widgetNumber].group ];
 
+        if (show_it) {
 
-	for (int widgetNumber=0; widgetNumber<numberOfUIWidgets-1; ++widgetNumber)
-	{
-		bool show_it = deliriumUI_window->group_visible[ deliriumUI_window->deliriumUIWidgets[widgetNumber].group ];
+            float x = deliriumUIWidgets[widgetNumber].x * deliriumUI_window->widgetWidth;
+            float y = deliriumUIWidgets[widgetNumber].y * deliriumUI_window->widgetHeight;
+            float w = deliriumUIWidgets[widgetNumber].w * deliriumUI_window->widgetWidth;
+            float h = deliriumUIWidgets[widgetNumber].h * deliriumUI_window->widgetHeight;
 
-		if (show_it)
-		{
+            w -= 2;
+            h -= 2;
 
-			float x = deliriumUIWidgets[widgetNumber].x * deliriumUI_window->widgetWidth;
-			float y = deliriumUIWidgets[widgetNumber].y * deliriumUI_window->widgetHeight;
-			float w = deliriumUIWidgets[widgetNumber].w * deliriumUI_window->widgetWidth;
-			float h = deliriumUIWidgets[widgetNumber].h * deliriumUI_window->widgetHeight;
+            if (!deliriumUIWidgets[widgetNumber].toggleMode) {
+                if (_x>=x && _y>=y && _x<=x+w && _y<=y+h) {
+                    deliriumUIWidgets[widgetNumber].pressed = true;
 
-			w -= 2;
-			h -= 2;
+                    if ( deliriumUIWidgets[widgetNumber]. port_number < 0) {
+                        for (int x=1; x<5; x++) {
+                            if ( x!= -deliriumUIWidgets[widgetNumber]. port_number)
+                                deliriumUI_window->group_visible[x] = false;
+                            else
+                                deliriumUI_window->group_visible[x] = true;
+                        }
+                        return;
+                    }
 
-			if (!deliriumUIWidgets[widgetNumber].toggleMode)
-			{
-				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h)
-				{
-					deliriumUIWidgets[widgetNumber].pressed = true;
+                    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) {
+                        deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
 
-					if ( deliriumUIWidgets[widgetNumber]. port_number < 0)
-					{
+                        write_function(controller, deliriumUIWidgets[widgetNumber].port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
 
-						for (int x=1; x<5; x++)
-						{
-							if ( x!= -deliriumUIWidgets[widgetNumber]. port_number)
-								deliriumUI_window->group_visible[x] = false;
-							else
-								deliriumUI_window->group_visible[x] = true;
-						}
-						return;
-					}
+                    }
 
-					if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch)
-					{
-						deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
+                    setValueFromMousePosition(deliriumUI_window, widgetNumber, _x, _y);
+                }
+                else {
+                    deliriumUIWidgets[widgetNumber].pressed = false;
+                    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) {
+                        deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
 
-						write_function( controller,deliriumUIWidgets[widgetNumber]. port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
+                        write_function( controller,deliriumUIWidgets[widgetNumber]. port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
+                    }
+                }
+            }
+            else {
+                if (_x>=x && _y>=y && _x<=x+w && _y<=y+h) {
+                    deliriumUIWidgets[widgetNumber].pressed = 1-deliriumUIWidgets[widgetNumber].pressed;
+                    if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch) {
+                        deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
 
-					}
-					setValueFromMousePosition(deliriumUI_window, widgetNumber, _x, _y);
+                        write_function( controller,deliriumUIWidgets[widgetNumber]. port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
+                    }
 
-				}
-				else
-				{
-					deliriumUIWidgets[widgetNumber].pressed = false;
-					if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch)
-					{
-						deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
-
-						write_function( controller,deliriumUIWidgets[widgetNumber]. port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
-
-					}
-				}
-			}
-			else
-			{
-				if (_x>=x && _y>=y && _x<=x+w && _y<=y+h)
-				{
-					deliriumUIWidgets[widgetNumber].pressed = 1-deliriumUIWidgets[widgetNumber].pressed;
-					if ( deliriumUIWidgets[widgetNumber].type == deliriumUI_Switch)
-					{
-						deliriumUIWidgets[widgetNumber].values[0] = deliriumUIWidgets[widgetNumber].pressed;
-
-						write_function( controller,deliriumUIWidgets[widgetNumber]. port_number, sizeof(float), 0, (const void*)&deliriumUIWidgets[widgetNumber].values[0]);
-
-					}
-
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------
 // Return number of widgets
 
-int getNumberOfWidgets(deliriumUI* deliriumUI_window)
-{
-	return deliriumUI_window->numberOfUIWidgets;
+int getNumberOfWidgets(deliriumUI* deliriumUI_window) {
+    return deliriumUI_window->numberOfUIWidgets;
 }
 
 //------------------------------------------------------------------
 // Initialise widget list
 
-void cleanUpDeliriumUI(deliriumUI* deliriumUI_window)
-{
-	deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
+void cleanUpDeliriumUI(deliriumUI* deliriumUI_window) {
+    deliriumUIWidget* deliriumUIWidgets = deliriumUI_window->deliriumUIWidgets;
 
-	free(deliriumUIWidgets);
+    free(deliriumUIWidgets);
 }
-
-
-
-
-
