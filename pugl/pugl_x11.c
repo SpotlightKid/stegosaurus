@@ -118,7 +118,7 @@ createContext(PuglView* view, XVisualInfo* vi)
 		impl->ctx = glXCreateContext(impl->display, vi, 0, GL_TRUE);
 	}
 #endif
-	
+
 #ifdef PUGL_HAVE_CAIRO
 	if (view->ctx_type == PUGL_CAIRO) {
 		impl->surface = cairo_xlib_surface_create(
@@ -134,7 +134,7 @@ createContext(PuglView* view, XVisualInfo* vi)
 		if (!(impl->crBackBuffer = cairo_create(impl->surfaceBackBuffer))) {
 			fprintf(stderr, "failed to create cairo back buffer context\n");
 		}
-		
+
 		// request a redisplay to draw backbuffer to shown buffer
 		puglPostRedisplay( view );
 	}
@@ -390,7 +390,7 @@ translateEvent(PuglView* view, XEvent xevent)
 			case 7: event.scroll.dx =  1.0f; break;
 			}
 		}
-		// nobreak
+		// fall through
 	case ButtonRelease:
 		if (xevent.xbutton.button < 4 || xevent.xbutton.button > 7) {
 			event.button.type   = ((xevent.type == ButtonPress)
@@ -493,7 +493,7 @@ puglProcessEvents(PuglView* view)
 			PUGL_EXPOSE, view, true, 0, 0, view->width, view->height, 0
 		};
 		puglDispatchEvent(view, (const PuglEvent*)&expose);
-		
+
 		// copy the backbuffer to the frontbuffer cairo context
 		cairo_save( view->impl->cr );
 		cairo_surface_flush( view->impl->surfaceBackBuffer );
